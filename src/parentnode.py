@@ -13,11 +13,14 @@ class ParentNode(HTMLNode):
     def __check_valid_children_tree(children):
         if not isinstance(children,list):
             raise TypeError("ParentNode attribute for children is not an array")
+        elif len(children)==0:
+            raise ValueError("ParentNode must have at least one children")
         
         childrenHaveCorrectTypes=map(lambda child:isinstance(child,ParentNode) or isinstance(child,LeafNode),children)
 
         if not reduce(lambda bool1,bool2: bool1 and bool2,childrenHaveCorrectTypes):
             raise TypeError("ParentNode children must be either other parent nodes or leaf nodes")
+        
 
     def to_html(self):
         if not isinstance(self.tag,str):
