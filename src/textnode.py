@@ -23,6 +23,15 @@ class TextNode:
     def __repr__(self):
         return f"TextNode({self.text}, {self.textType.value}, {self.url})"
 
+    def is_empty(self):
+        match self.textType:
+            case TextType.LINK:
+                return (self.url is None or self.url=="") and (self.text is None or self.text=="")
+            case TextType.IMAGE:
+                return (self.url is None or self.url=="") and (self.text is None or self.text=="")
+            case _:
+                return (self.text is None or self.text=="")
+
     def to_html_node(self):
         match self.textType:
             case TextType.TEXT:

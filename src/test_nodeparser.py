@@ -1,6 +1,6 @@
 import unittest
 
-from node_parser import split_nodes_delimiter
+from node_parser import split_nodes_delimiter, split_nodes_image, split_singular_node_image
 from textnode import TextType,TextNode
 
 class TestNodeParser(unittest.TestCase):
@@ -60,9 +60,31 @@ class TestNodeParser(unittest.TestCase):
         new_nodes=split_nodes_delimiter(nodes,delimiter="*",text_type=TextType.ITALIC)
         self.assertEqual(new_nodes,[])
 
-    # def test_reading_links(self):
-    #     node=TextNode("This contains [a link](www.link.com)"),
+    def test_reading_links(self):
+        node=TextNode("This contains [a link](www.link.com)"),
+        pass
 
+    def test_reading_images(self):
+        node1=TextNode("This contains ![an image](www.photo.com) hellow and ![another im](age) wassup")
+        node2=TextNode("Some other ![an image](www.photo.com)")
+        node3=TextNode("![]() an empty image")
+        node4=TextNode("No images *here*")
+        inputs=[node1,node2,node3,node4]
+        
+        expectedOutput=[TextNode("This contains "),
+                TextNode("an image",url="www.photo.com",textType=TextType.IMAGE),
+                TextNode(" hellow and "),
+                TextNode("another im",url="age",textType=TextType.IMAGE),
+                TextNode(" wassup"),
+                TextNode("Some other "),
+                TextNode("an image",url="www.photo.com",textType=TextType.IMAGE),
+                TextNode(" an empty image"),
+                TextNode("No images *here*")
+                ]
+
+        actualOutput=split_nodes_image(inputs)
+
+        self.assertEqual(actualOutput,expectedOutput)
 
 
 if __name__=="__main__":
