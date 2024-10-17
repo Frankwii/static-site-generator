@@ -66,6 +66,9 @@ def split_strings_by_delimiters(strings,delimiters):
 
 def split_nodes_image(old_nodes):
     def split_singular_node_image(node):
+        if node.textType!=TextType.TEXT:
+            return [node]
+
         text=node.text
 
         def extract_markdown_images(text):
@@ -102,6 +105,9 @@ def split_nodes_image(old_nodes):
 
 def split_nodes_link(old_nodes):
     def split_singular_node_link(node):
+        if node.textType!=TextType.TEXT:
+            return [node]
+
         text=node.text
 
         def extract_markdown_links(text):
@@ -113,7 +119,7 @@ def split_nodes_link(old_nodes):
     
         def construct_delimiter(link_tuple):
             text,link=link_tuple
-            return f"![{text}]({link})"
+            return f"[{text}]({link})"
     
         delimiters=map(construct_delimiter,link_tuples)
     
@@ -134,3 +140,21 @@ def split_nodes_link(old_nodes):
         return filter(lambda node: not node.is_empty(),nodes)
 
     return list(chain.from_iterable(map(split_singular_node_link,old_nodes)))
+
+# ========================================================================================================================
+
+def text_to_text_nodes(text):
+    first_node=[TextNode(text)]
+    
+    # Order matters here!
+    separated_images=split_nodes_image(first_node)
+    separated_links=split_nodes_link(separated_images)
+    separated_bold_asterisk=split_nodes_delimiter(separated_links,"**",text_type=TextType.BOLD)
+    separated_bold_underscore=split_nodes_delimiter(separated_bold_asterisk,"__",text_type=TextType.BOLD)
+    separated_italic_asterisk=split_nodes_delimiter(separated_bold_underscore,"*",text_type=TextType.ITALIC)
+    separated_italic_underscore=split_nodes_delimiter(separated_italic_asterisk,"_",text_type=TextType.ITALIC)
+    separated_code=split_nodes_delimiter(separated_italic_underscore,"`",text_type=TextType.CODE)
+    separated_code_doubletick=split_nodes_delimiter(separated_code,"``",text_type=TextType.CODE)
+
+    return separated_code_doubletick
+

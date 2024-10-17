@@ -1,6 +1,6 @@
 import unittest
 
-from node_parser import split_nodes_delimiter, split_nodes_image, split_singular_node_image
+from node_parser import split_nodes_delimiter, split_nodes_image, split_nodes_link, text_to_text_nodes
 from textnode import TextType,TextNode
 
 class TestNodeParser(unittest.TestCase):
@@ -61,8 +61,13 @@ class TestNodeParser(unittest.TestCase):
         self.assertEqual(new_nodes,[])
 
     def test_reading_links(self):
-        node=TextNode("This contains [a link](www.link.com)"),
-        pass
+        node=TextNode("This contains [a link](www.link.com)")
+        inputs=[node]
+        expectedOutput=[TextNode("This contains "),
+                        TextNode("a link",url="www.link.com",textType=TextType.LINK)]
+        actualOutput=split_nodes_link(inputs)
+
+        self.assertEqual(actualOutput,expectedOutput)
 
     def test_reading_images(self):
         node1=TextNode("This contains ![an image](www.photo.com) hellow and ![another im](age) wassup")
@@ -84,6 +89,25 @@ class TestNodeParser(unittest.TestCase):
 
         actualOutput=split_nodes_image(inputs)
 
+        self.assertEqual(actualOutput,expectedOutput)
+
+    def test_text_to_textnodes(self):
+        testinput="This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+
+        expectedOutput=[
+                TextNode("This is ", TextType.TEXT),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.TEXT),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" word and a ", TextType.TEXT),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.TEXT),
+                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" and a ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+                ]
+
+        actualOutput=text_to_text_nodes(testinput)
         self.assertEqual(actualOutput,expectedOutput)
 
 
