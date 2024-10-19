@@ -1,6 +1,6 @@
 import unittest
 from htmlnode import ParentNode, LeafNode
-from markdown_parser import block_to_htmlnode
+from markdown_parser import block_to_htmlnode, markdown_to_htmlnode
 
 class TestMarkdownToNodes(unittest.TestCase):
     def test_block_to_nodes_paragraph(self):
@@ -64,6 +64,36 @@ class TestMarkdownToNodes(unittest.TestCase):
 
         expectedOutput=ParentNode(tag="ol", children=[LeafNode(tag="li", value="A listylist"), LeafNode(tag="li", value="Second item")])
 
+        self.assertEqual(actualOutput,expectedOutput)
+
+    def test_fulldocument(self):
+        markdown="# This is a Markdown document\n"+\
+                "\n"+\
+                "Like a **full blown** Markdown damn document\n"+\
+                "With ![image](www.photo.com) *images* and everything\n"+\
+                "\n"+\
+                "\n \n"+\
+                "* List element 1\n"+\
+                "- List element 2"
+
+        actualOutput=markdown_to_htmlnode(markdown)
+
+        block1_node=ParentNode(tag="h1", children=[LeafNode(value="This is a Markdown document")])
+
+        block2_node=ParentNode(tag="p", children=[LeafNode(value="Like a "),
+                                                  LeafNode(tag="b", value="full blown"),
+                                                  LeafNode(value=" Markdown damn document\nWith "),
+                                                  LeafNode(tag="img", props={"src":"www.photo.com", "alt":"image"}, value=""),
+                                                  LeafNode(value=" "),
+                                                  LeafNode(tag="i", value="images"),
+                                                  LeafNode(" and everything")
+                                                  ]
+                               )
+
+        block3_node=ParentNode(tag="ul",children=[LeafNode(tag="li", value="List element 1"), LeafNode(tag="li", value="List element 2")])
+
+        expectedOutput=ParentNode(tag="div", children=[block1_node, block2_node, block3_node])
+    
         self.assertEqual(actualOutput,expectedOutput)
 
 if __name__=="__main__":

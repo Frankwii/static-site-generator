@@ -122,9 +122,14 @@ def block_to_htmlnode(block):
                               children=[LeafNode(tag="p", value=quote)]
                               )
 
-# def markdown_to_htmlnode(markdown):
-#     pass
+def markdown_to_htmlnode(markdown):
+    blocks=markdown_to_blocks(markdown)
+
+    return ParentNode(tag="div", children=list(map(block_to_htmlnode, blocks)))
 
 
+def markdown_to_html(markdown):
+
+    return markdown_to_htmlnode(markdown).to_html()
     
 
