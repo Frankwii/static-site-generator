@@ -103,23 +103,23 @@ def block_to_htmlnode(block):
                               )
 
         case BlockType.UNORDERED_LIST:
-            listcontents=map(lambda line: line.split(" ")[1], block.splitlines())
+            listcontents=map(lambda line: line.split(" ",1)[1], block.splitlines())
             return ParentNode(tag="ul",
                               children=list(map(lambda string: LeafNode(tag="li", value=string), listcontents))
                               )
 
         case BlockType.ORDERED_LIST:
-            listcontents=map(lambda line: line.split(" ")[1], block.splitlines())
+            listcontents=map(lambda line: line.split(" ",1)[1], block.splitlines())
             return ParentNode(tag="ol",
                               children=list(map(lambda string: LeafNode(tag="li", value=string), listcontents))
                               )
 
         case BlockType.QUOTE:
-            quotelines=map(lambda line: line.split(" ")[1], block.splitlines())
+            quotelines=map(lambda line: line.split(" ",1)[1], block.splitlines())
             quote=reduce(lambda string1, string2: string1+"\n"+string2, quotelines)
 
             return ParentNode(tag="blockquote",
-                              children=[LeafNode(value=quote)]
+                              children=[LeafNode(tag="p", value=quote)]
                               )
 
 # def markdown_to_htmlnode(markdown):

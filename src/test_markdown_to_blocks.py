@@ -1,6 +1,6 @@
 import unittest
 
-from markdown_parser import BlockType, block_to_block_type, markdown_to_blocks
+from markdown_parser import BlockType, block_to_blocktype, markdown_to_blocks
 
 class TestMarkdownParser(unittest.TestCase):
 
@@ -87,7 +87,7 @@ class TestMarkdownParser(unittest.TestCase):
         "* This is a list item\n"+\
         "* This is another list item"
 
-        actualOutput=list(map(block_to_block_type,markdown_to_blocks(markdown)))
+        actualOutput=list(map(block_to_blocktype,markdown_to_blocks(markdown)))
 
         expectedOutput=[
                         BlockType.HEADING,
@@ -106,7 +106,7 @@ class TestMarkdownParser(unittest.TestCase):
         "2. This is a list item\n"+\
         "3. This is another list item"
 
-        actualOutput=list(map(block_to_block_type,markdown_to_blocks(markdown)))
+        actualOutput=list(map(block_to_blocktype,markdown_to_blocks(markdown)))
 
         expectedOutput=[
                         BlockType.HEADING,
@@ -125,7 +125,7 @@ class TestMarkdownParser(unittest.TestCase):
         "2. This is a list item\n"+\
         "3. This is another list item"
 
-        actualOutput=list(map(block_to_block_type,markdown_to_blocks(markdown)))
+        actualOutput=list(map(block_to_blocktype,markdown_to_blocks(markdown)))
 
         expectedOutput=[
                         BlockType.HEADING,
@@ -145,7 +145,7 @@ class TestMarkdownParser(unittest.TestCase):
         "3. This is a list item\n"+\
         "2. This is another list item"
 
-        actualOutput=list(map(block_to_block_type,markdown_to_blocks(markdown)))
+        actualOutput=list(map(block_to_blocktype,markdown_to_blocks(markdown)))
 
         expectedOutput=[
                         BlockType.HEADING,

@@ -26,7 +26,7 @@ class HTMLNode:
 
     def __repr__(self):
 
-        return f"Tag: {self.tag}\nValue: {self.value}\nChildren: {self.children}\nProps: {self.props}"
+        return f"HTMLNode(Tag: {self.tag}\nValue: {self.value}\nChildren: {self.children}\nProps: {self.props})"
 
     def __eq__(self,other):
         return vars(self)==vars(other)
@@ -45,6 +45,19 @@ class LeafNode(HTMLNode):
 
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
 
+    def __repr__(self):
+        if self.tag is not None:
+            tagstring=f"tag={self.tag}, "
+        else:
+            tagstring=""
+
+        if self.props is not None:
+            propsstring=f"props={self.props}, "
+        else:
+            propsstring=""
+
+        return f"LeafNode({tagstring}{propsstring}value=\"{self.value}\")"
+
 class ParentNode(HTMLNode):
     def __init__(self,children,tag=None,props=None):
         ParentNode.__check_valid_children_tree(children)
@@ -55,6 +68,19 @@ class ParentNode(HTMLNode):
             raise ValueError("Empty tags are not allowed for ParentNodes")
 
         super().__init__(children=children,tag=tag,props=props)
+
+    def __repr__(self):
+        if self.tag is not None:
+            tagstring=f"tag={self.tag}, "
+        else:
+            tagstring=""
+
+        if self.props is not None:
+            propsstring=f"props={self.props}, "
+        else:
+            propsstring=""
+
+        return f"ParentNode({tagstring}{propsstring}children={self.children})"
 
     @staticmethod
     def __check_valid_children_tree(children):
