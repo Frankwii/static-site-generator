@@ -3,8 +3,9 @@ from itertools import chain
 from functools import reduce
 from enum import Enum
 
-from htmlnode import ParentNode, LeafNode
-from node_parser import text_to_text_nodes
+from src.htmlnode import ParentNode, LeafNode
+from src.node_parser import text_to_text_nodes
+from src.textnode import TextNode
 
 def split_strings_by_singular_delimiter_one(strings,delimiter):
 
@@ -104,22 +105,33 @@ def block_to_htmlnode(block):
 
         case BlockType.UNORDERED_LIST:
             listcontents=map(lambda line: line.split(" ",1)[1], block.splitlines())
-            return ParentNode(tag="ul",
-                              children=list(map(lambda string: LeafNode(tag="li", value=string), listcontents))
-                              )
+
+            textnodes=map(text_to_text_nodes,listcontents)
+            def cast_textnodes_to_parentnode(line_textnodes):
+                leafnodes=list(map(lambda textnode: textnode.to_html_node(), line_textnodes))
+
+                return ParentNode(tag="li", children=leafnodes)
+
+            return ParentNode(tag="ul", children=list(map(cast_textnodes_to_parentnode,textnodes)))
 
         case BlockType.ORDERED_LIST:
+
             listcontents=map(lambda line: line.split(" ",1)[1], block.splitlines())
-            return ParentNode(tag="ol",
-                              children=list(map(lambda string: LeafNode(tag="li", value=string), listcontents))
-                              )
+
+            textnodes=map(text_to_text_nodes,listcontents)
+            def cast_textnodes_to_parentnode(line_textnodes):
+                leafnodes=list(map(lambda textnode: textnode.to_html_node(), line_textnodes))
+
+                return ParentNode(tag="li", children=leafnodes)
+
+            return ParentNode(tag="ol", children=list(map(cast_textnodes_to_parentnode,textnodes)))
 
         case BlockType.QUOTE:
             quotelines=map(lambda line: line.split(" ",1)[1], block.splitlines())
             quote=reduce(lambda string1, string2: string1+"\n"+string2, quotelines)
 
             return ParentNode(tag="blockquote",
-                              children=[LeafNode(tag="p", value=quote)]
+                              children=[LeafNode(value=quote)]
                               )
 
 def markdown_to_htmlnode(markdown):

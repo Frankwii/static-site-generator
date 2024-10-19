@@ -1,7 +1,7 @@
 import re
 from itertools import chain
 from functools import reduce
-from textnode import TextType,TextNode
+from src.textnode import TextType,TextNode
 
 
 ### This code is quite complex
