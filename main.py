@@ -34,6 +34,26 @@ def generate_page(from_path,template_path,dest_path):
     with open(dest_path, 'w') as html_file:
         html_file.write(html)
 
+def is_file_markdown(path):
+    return path.rsplit(".")[1]=="md"
+
+def generate_pages_recursive(sourcePath,template_path,destPath):
+    if not os.path.isfile(sourcePath):
+        logger.info(f"Into directory {sourcePath}")
+        os.makedirs(name=destPath, exist_ok=True)
+        children=os.listdir(sourcePath)
+
+        list(
+            map(lambda child: generate_pages_recursive(
+            sourcePath=os.path.join(sourcePath,child),
+            template_path=template_path,
+            destPath=os.path.join(destPath,child)
+            ), children)
+             )
+
+    elif is_file_markdown(sourcePath):
+        generate_page(sourcePath,template_path,destPath.replace(".md",".html"))
+
 if __name__=="__main__":
     copystatic()
-    generate_page(from_path="content/index.md",dest_path="public/index.html",template_path="template.html")
+    generate_pages_recursive(sourcePath="content",destPath="public",template_path="template.html")
